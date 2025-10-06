@@ -9,204 +9,296 @@
       const formURL = "https://docs.google.com/forms/d/e/1FAIpQLSfYQpexKbJbf7KH8r_piZ5rr6tkKppaBJ36tbfuq_-CfMvYEg/viewform?usp=pp_url&entry.455738103=" + encodeURIComponent(game);
       window.open(formURL, "_blank");
     }
+
+    // Theme toggle logic
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+    }
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    }
+    window.onload = function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      setTheme(savedTheme);
+    };
   </script>
   <style>
+    :root {
+      --bg-gradient-dark: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      --bg-gradient-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      --container-bg-dark: rgba(255,255,255,0.05);
+      --container-bg-light: rgba(0,0,0,0.03);
+      --text-dark: #f5f5f5;
+      --text-light: #222;
+      --subtext-dark: #ccc;
+      --subtext-light: #555;
+      --shadow-dark: 0 0 20px rgba(0,0,0,0.4);
+      --shadow-light: 0 0 20px rgba(180,180,180,0.18);
+      --btn-bg-dark: #2b2b2b;
+      --btn-bg-light: #eaeaea;
+      --btn-border-dark: #555;
+      --btn-border-light: #bbb;
+      --btn-hover-dark: #3b3b3b;
+      --btn-hover-light: #d4d4d4;
+      --offer-btn-dark: #4CAF50;
+      --offer-btn-light: #388e3c;
+      --offer-btn-hover-dark: #45a049;
+      --offer-btn-hover-light: #2e7031;
+      --th-dark: #ffcc66;
+      --th-light: #e69500;
+      --footer-dark: #777;
+      --footer-light: #888;
+      --transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    html[data-theme='dark'] {
+      --bg-gradient: var(--bg-gradient-dark);
+      --container-bg: var(--container-bg-dark);
+      --text: var(--text-dark);
+      --subtext: var(--subtext-dark);
+      --shadow: var(--shadow-dark);
+      --btn-bg: var(--btn-bg-dark);
+      --btn-border: var(--btn-border-dark);
+      --btn-hover: var(--btn-hover-dark);
+      --offer-btn: var(--offer-btn-dark);
+      --offer-btn-hover: var(--offer-btn-hover-dark);
+      --th: var(--th-dark);
+      --footer: var(--footer-dark);
+    }
+    html[data-theme='light'] {
+      --bg-gradient: var(--bg-gradient-light);
+      --container-bg: var(--container-bg-light);
+      --text: var(--text-light);
+      --subtext: var(--subtext-light);
+      --shadow: var(--shadow-light);
+      --btn-bg: var(--btn-bg-light);
+      --btn-border: var(--btn-border-light);
+      --btn-hover: var(--btn-hover-light);
+      --offer-btn: var(--offer-btn-light);
+      --offer-btn-hover: var(--offer-btn-hover-light);
+      --th: var(--th-light);
+      --footer: var(--footer-light);
+    }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-      color: #f5f5f5;
+      background: var(--bg-gradient);
+      color: var(--text);
       text-align: center;
       margin: 0;
       padding: 0;
-      min-height: 100vh; /* Ensures background covers full viewport height */
+      min-height: 100vh;
+      transition: var(--transition);
+    }
+    .theme-toggle {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: 10;
+      background: var(--btn-bg);
+      color: var(--text);
+      border: 1px solid var(--btn-border);
+      border-radius: 50px;
+      padding: 8px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    .theme-toggle:hover {
+      background: var(--btn-hover);
+      transform: scale(1.05);
     }
     h1 {
       margin: 20px 0 5px;
       font-size: 2rem;
-      color: #f5f5f5;
+      color: var(--text);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transition: var(--transition);
     }
     p {
-      color: #ccc;
+      color: var(--subtext);
       margin-bottom: 20px;
+      transition: var(--transition);
     }
     .container {
       max-width: 950px;
       margin: auto;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      background: var(--container-bg);
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: var(--transition);
     }
     th, td {
-      padding: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 14px;
+      border-bottom: 1px solid rgba(120, 120, 120, 0.08);
       vertical-align: middle;
+      transition: var(--transition);
     }
     th {
       text-transform: uppercase;
       font-weight: 600;
       letter-spacing: 1px;
-      color: #ffcc66;
+      color: var(--th);
+      background: transparent;
+      transition: var(--transition);
     }
     tr:hover {
-      background-color: rgba(255, 255, 255, 0.08);
-      transition: background 0.3s ease;
+      background-color: rgba(180, 180, 180, 0.08);
+      transition: var(--transition);
     }
     .btn-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #2b2b2b;
-      color: white;
-      border: 1px solid #555;
+      background: var(--btn-bg);
+      color: var(--text);
+      border: 1px solid var(--btn-border);
       border-radius: 6px;
       padding: 6px 10px;
       margin: 2px;
       cursor: pointer;
       text-decoration: none;
       font-size: 0.85rem;
-      transition: background 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+      transition: var(--transition);
     }
     .btn-link img {
       width: 16px;
       height: 16px;
     }
     .btn-link:hover {
-      background: #3b3b3b;
+      background: var(--btn-hover);
       transform: scale(1.05);
     }
     .offer-btn {
-      background: #4CAF50;
+      background: var(--offer-btn);
       color: white;
       border: none;
-      padding: 8px 14px;
+      padding: 9px 16px;
       cursor: pointer;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: bold;
-      transition: transform 0.15s ease, background 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+      transition: var(--transition), transform 0.15s;
     }
     .offer-btn:hover {
-      background: #45a049;
+      background: var(--offer-btn-hover);
       transform: scale(1.05);
     }
     footer {
       margin-top: 25px;
       font-size: 0.8rem;
-      color: #777;
+      color: var(--footer);
+      transition: var(--transition);
     }
   </style>
 </head>
 <body>
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="theme-icon">🌙</span>
+    <span id="theme-label">Dark</span>
+  </button>
+  <script>
+    // Update icon and label on theme change
+    function updateThemeToggle() {
+      const theme = document.documentElement.getAttribute('data-theme');
+      document.getElementById('theme-icon').textContent = theme === 'dark' ? '🌙' : '☀️';
+      document.getElementById('theme-label').textContent = theme === 'dark' ? 'Dark' : 'Light';
+    }
+    window.addEventListener('DOMContentLoaded', updateThemeToggle);
+    window.addEventListener('storage', updateThemeToggle);
+    document.documentElement.addEventListener('attrchange', updateThemeToggle);
+    // Listen for theme changes
+    const observer = new MutationObserver(updateThemeToggle);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  </script>
+
   <h1>🎮 My Steam Keys 🎮</h1>
   <p>Check game info, then send me your offer!</p>
 
   <div class="container">
     <table>
       <tr><th>Game</th><th>Details</th><th>Action</th></tr>
-
-      <tr>
-        <td>LEGO Batman: The Videogame</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/21000/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/21000/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO Batman: The Videogame')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO The Hobbit</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/285160/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/285160/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO The Hobbit')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO® Marvel™ Super Heroes</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/249130/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/249130/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO® Marvel™ Super Heroes')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>The LEGO® Movie - Videogame</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/267530/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/267530/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('The LEGO® Movie - Videogame')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>The LEGO Movie 2 Videogame</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/881320/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/881320/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('The LEGO Movie 2 Videogame')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO Ninjago Movie Video Game</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/544920/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/544920/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO Ninjago Movie Video Game')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO The Lord of the Rings</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/214510/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/214510/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO The Lord of the Rings')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO® Batman 2: DC Super Heroes</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/213330/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/213330/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO® Batman 2: DC Super Heroes')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO® Jurassic World</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/352400/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/352400/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO® Jurassic World')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO® Worlds</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/332310/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/332310/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO® Worlds')">Make an Offer</button></td>
-      </tr>
-
-      <tr>
-        <td>LEGO® The Incredibles</td>
-        <td>
-          <a class="btn-link" href="https://steamdb.info/app/818320/" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
-          <a class="btn-link" href="https://store.steampowered.com/app/818320/" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
-        </td>
-        <td><button class="offer-btn" onclick="openOfferForm('LEGO® The Incredibles')">Make an Offer</button></td>
-      </tr>
+      <tbody id="games-tbody"></tbody>
     </table>
   </div>
+  <script>
+    // --- Google Sheets CSV fetch and table population ---
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4PQiLZJl2asuDF-PApF54DOcem5PHlImgpSlSfNiNHH-U9yLYH2E7mw29vuMLddWNHh8bk-5gacuG/pub?gid=0&single=true&output=csv";
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const rows = lines.map(line => {
+        // Simple CSV split (doesn't handle quoted commas)
+        return line.split(',').map(cell => cell.trim());
+      });
+      return rows;
+    }
+
+    function getSteamAppId(gameName) {
+      // Map game names to Steam app IDs (add more as needed)
+      const map = {
+        "LEGO Batman: The Videogame": "21000",
+        "LEGO The Hobbit": "285160",
+        "LEGO® Marvel™ Super Heroes": "249130",
+        "The LEGO® Movie - Videogame": "267530",
+        "The LEGO Movie 2 Videogame": "881320",
+        "LEGO Ninjago Movie Video Game": "544920",
+        "LEGO The Lord of the Rings": "214510",
+        "LEGO® Batman 2: DC Super Heroes": "213330",
+        "LEGO® Jurassic World": "352400",
+        "LEGO® Worlds": "332310",
+        "LEGO® The Incredibles": "818320"
+      };
+      return map[gameName] || "";
+    }
+
+    function renderTable(rows) {
+      const tbody = document.getElementById('games-tbody');
+      tbody.innerHTML = "";
+      // Assume first row is header, skip it
+      for (let i = 1; i < rows.length; i++) {
+        const game = rows[i][0];
+        if (!game) continue;
+        const appId = getSteamAppId(game);
+        const steamdbUrl = appId ? `https://steamdb.info/app/${appId}/` : "#";
+        const steamUrl = appId ? `https://store.steampowered.com/app/${appId}/` : "#";
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${game}</td>
+          <td>
+            <a class="btn-link" href="${steamdbUrl}" target="_blank"><img src="./icons/SteamDB_Icon_logo.svg" alt="SteamDB"></a>
+            <a class="btn-link" href="${steamUrl}" target="_blank"><img src="./icons/Steam_icon_logo.svg" alt="Steam"></a>
+          </td>
+          <td><button class="offer-btn" onclick="openOfferForm('${game.replace(/'/g, "\\'")}')">Make an Offer</button></td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    fetch(CSV_URL)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = parseCSV(csv);
+        renderTable(rows);
+      })
+      .catch(err => {
+        document.getElementById('games-tbody').innerHTML = `<tr><td colspan="3">Failed to load games.</td></tr>`;
+      });
+  </script>
 </body>
 </html>
