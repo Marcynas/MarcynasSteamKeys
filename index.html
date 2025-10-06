@@ -237,8 +237,11 @@
     </table>
   </div>
   <script>
-    // --- Google Sheets CSV fetch and table population ---
+    // --- Google Sheets CSV fetch and table population with caching ---
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS4PQiLZJl2asuDF-PApF54DOcem5PHlImgpSlSfNiNHH-U9yLYH2E7mw29vuMLddWNHh8bk-5gacuG/pub?gid=0&single=true&output=csv";
+    const CACHE_KEY = "steamGamesCSV";
+    const CACHE_TIME_KEY = "steamGamesCSVTime";
+    const CACHE_MAX_AGE = 60 * 60 * 1000; // 1 hour in ms
 
     function parseCSV(text) {
       const lines = text.trim().split('\n');
@@ -290,15 +293,29 @@
       }
     }
 
-    fetch(CSV_URL)
-      .then(res => res.text())
-      .then(csv => {
-        const rows = parseCSV(csv);
+    function loadTable() {
+      const cachedCSV = localStorage.getItem(CACHE_KEY);
+      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+      const now = Date.now();
+      if (cachedCSV && cachedTime && (now - cachedTime < CACHE_MAX_AGE)) {
+        const rows = parseCSV(cachedCSV);
         renderTable(rows);
-      })
-      .catch(err => {
-        document.getElementById('games-tbody').innerHTML = `<tr><td colspan="3">Failed to load games.</td></tr>`;
-      });
+      } else {
+        fetch(CSV_URL)
+          .then(res => res.text())
+          .then(csv => {
+            localStorage.setItem(CACHE_KEY, csv);
+            localStorage.setItem(CACHE_TIME_KEY, now);
+            const rows = parseCSV(csv);
+            renderTable(rows);
+          })
+          .catch(err => {
+            document.getElementById('games-tbody').innerHTML = `<tr><td colspan="3">Failed to load games.</td></tr>`;
+          });
+      }
+    }
+
+    loadTable();
   </script>
 </body>
 </html>
